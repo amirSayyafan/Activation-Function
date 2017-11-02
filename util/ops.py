@@ -23,5 +23,5 @@ def dense(inputs, dim, scope):
 
 def batch_norm(inputs, scope):
     return tf.contrib.layers.batch_norm(
-        inputs, decay=0.9, center=True, activation_fn=tf.nn.relu,
+        inputs, decay=0.9, center=True, activation_fn=None,
         updates_collections=None, epsilon=1e-5, scope=scope+'/batch_norm')
