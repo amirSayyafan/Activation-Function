@@ -87,12 +87,15 @@ class VGG16(object):
 
     def build_bottom_block(self, inputs, name):
         outs = tf.contrib.layers.flatten(inputs, scope=name + '/flat')
-        outs = self.build_out_block(outs, 'out_block1')
         outs = ops.dense(outs, 4096, name + '/dense1')
-        outs = self.build_out_block(outs, 'out_block2')
+        outs = self.build_out_block(outs, 'out_block1')
+        outs = ops.batch_norm(outs, name + '/batch_norm1')
         outs = ops.dense(outs, 4096, name + '/dense2')
-        outs = self.build_out_block(outs, 'out_block3')
+        outs = self.build_out_block(outs, 'out_block2')
+        outs = ops.batch_norm(outs, name + '/batch_norm2')
         outs = ops.dense(outs, self.conf.class_num, name + '/dense3')
+        outs = self.build_out_block(outs, 'out_block3')
+        outs = ops.batch_norm(outs, name + '/batch_norm3')
         #outs = ops.batch_norm(outs, name + '/bath_norm', self.is_train, None)
         return outs
 
@@ -115,7 +118,7 @@ class VGG16(object):
       self.threds = tf.get_variable(
         name + '/act/weights', outs.shape.as_list()[1:],
         initializer=tf.random_normal_initializer())
-      outs = ops.batch_norm(outs, name+'/bath_norm')
+      outs = tf.nn.relu(outs, name+'/bath_norm')
       #else:
         #outs = tf.nn.relu(outs, name=name + '/relu')
       # outs = ops.dense(outs, self.conf.class_num, name)
