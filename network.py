@@ -61,12 +61,6 @@ class VGG16(object):
 
     def inference(self, inputs):
         outputs = inputs
-        #for layer_index in range(self.conf.network_depth - 1):
-        #    is_first = True if not layer_index else False
-        #    is_last = True if layer_index == self.conf.network_depth - 2 else False
-        #    name = 'down%s' % layer_index
-        #    outputs = self.build_down_block(
-        #        outputs, name, is_first, is_last)
         outputs = self.build_bottom_block(outputs, 'bottom')
         return outputs
 
@@ -96,32 +90,21 @@ class VGG16(object):
         outs = ops.dense(outs, self.conf.class_num, name + '/dense3')
         outs = self.build_out_block(outs, 'out_block3')
         outs = ops.batch_norm(outs, name + '/batch_norm3')
-        #outs = ops.batch_norm(outs, name + '/bath_norm', self.is_train, None)
         return outs
 
     def build_out_block(self, outs, name):
-        # outs = ops.batch_norm(outs, name+'/bath_norm', self.is_train, None)
-        #if self.conf.use_act:
         self.threds = tf.get_variable(
             name + '/act/weights', outs.shape.as_list()[1:],
             initializer=tf.random_normal_initializer())
         outs = tf.maximum(self.threds, outs, name=name + '/act')
-        #else:
-            #outs = tf.nn.relu(outs, name=name + '/relu')
-        # outs = ops.dense(outs, self.conf.class_num, name)
         return outs
 
 
     def build_out_relu(self, outs, name):
-      # outs = ops.batch_norm(outs, name+'/bath_norm', self.is_train, None)
-      #if self.conf.use_act:
       self.threds = tf.get_variable(
         name + '/act/weights', outs.shape.as_list()[1:],
         initializer=tf.random_normal_initializer())
       outs = tf.nn.relu(outs, name+'/bath_norm')
-      #else:
-        #outs = tf.nn.relu(outs, name=name + '/relu')
-      # outs = ops.dense(outs, self.conf.class_num, name)
       return outs
 
 
