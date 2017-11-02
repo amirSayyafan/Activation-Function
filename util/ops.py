@@ -17,7 +17,6 @@ def pool2d(inputs, kernel_size, scope):
 def dense(inputs, dim, scope):
     outputs = tf.contrib.layers.fully_connected(
         inputs, dim, activation_fn=None, scope=scope+'/dense')
-    #outputs = batch_norm(outputs, scope)
     return outputs
 
 
